@@ -12,18 +12,14 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 	public static void main(String[] args) throws IOException, URISyntaxException {
 		Path path = Paths.get((Main.class.getResource("book.txt").toURI()));
 		System.out.println(path.toString());
-		// Files.lines(path, Charset.forName("Cp1252")).forEach(System.out::println);
-		// System.exit(0);
-		Stream<String> lines = Files.lines(path, Charset.forName("Cp1252"));
 		Long t1 = Instant.now().toEpochMilli();
-		Map<String, Long> words = lines //
-//				.parallel() //
+		Map<String, Long> words = Files.lines(path, Charset.forName("Cp1252"))
+				// .parallel() //
 				.map(l -> l.split("\\s+")) //
 				.flatMap(Arrays::stream) //
 				.filter(w -> !w.isEmpty()) //
@@ -36,9 +32,9 @@ public class Main {
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())) //
 				.limit(50) //
 				.forEach(e -> System.out.printf("%s: %s\n", e.getKey(), e.getValue()));
-		
+
 		Long t3 = Instant.now().toEpochMilli();
-		
+
 		System.out.printf("total time: %d\n", t3 - t1);
 		System.out.printf("reading time: %d\n", t2 - t1);
 		System.out.printf("sorting time: %d\n", t3 - t2);
